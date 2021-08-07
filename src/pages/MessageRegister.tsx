@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, StatusBar, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, StatusBar, Keyboard, FlatList, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
 const imgs = [
   {
+    id: 1,
     link: '../../assets/beer.png',
   },
   {
+    id: 2,
     link: 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80',
   },
   {
+    id: 3,
+
     link: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGl6emF8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
   },
   {
+    id: 4,
     link: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGl6emF8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
   }
 ];
@@ -21,6 +26,21 @@ const imgs = [
 
 function MessageRegister() {
   const [selected, setSelected] = useState<boolean>();
+  const [optionIndex, setOptionIndex] = useState<number>();
+
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isNameKeyboardVisible, setNameKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true); // or some other action
+    })
+    Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false); // or some other action
+    });
+
+    console.log(optionIndex);
+  }, [optionIndex]);
 
   return (
     <View>
@@ -37,53 +57,69 @@ function MessageRegister() {
 
         <View style={styles.content}>
           <View>
-            <Text style={styles.subtitle}>Escolha uma refeição abaixo</Text>
+            {!isKeyboardVisible ? (
+              <>
+                <Text style={styles.subtitle}>Escolha uma refeição abaixo</Text>
 
-            <FlatList
-              data={imgs}
-              horizontal
-              keyExtractor={(item) => item.link}
-              renderItem={({ item }) => (
-                <>
-                  {selected ? (
-                    <TouchableOpacity
-                      style={[styles.selectOptions, { borderWidth: 2, borderColor: '#b73058' }]}
-                      onPress={() => setSelected(false)}
-                    >
-                      <Image source={require('../../assets/beer.png')} style={styles.icons} />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity style={styles.selectOptions}
-                      onPress={() => setSelected(true)}
-                    >
-                      <Image source={require('../../assets/beer.png')} style={styles.icons} />
-                    </TouchableOpacity>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  data={imgs}
+                  horizontal
+                  keyExtractor={(item) => String(item.id)}
+                  renderItem={({ item, index }) => (
+                    <>
+                      {(selected && optionIndex == index)? (
+                        <TouchableOpacity
+                          style={[styles.selectOptions, { borderWidth: 2, borderColor: '#b73058' }]}
+                          onPress={() => {
+                            setSelected(false);
+                            setOptionIndex(index);
+                          }}
+                        >
+                          <Image source={require('../../assets/beer.png')} style={styles.icons} />
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity style={styles.selectOptions}
+                          onPress={() => {
+                            setSelected(true);
+                            setOptionIndex(index);
+                          }}
+                        >
+                          <Image source={require('../../assets/beer.png')} style={styles.icons} />
+                        </TouchableOpacity>
+                      )}
+
+                    </>
                   )}
-
-                </>
-              )}
-            />
+                />
+              </>
+            ) : null}
 
           </View>
 
           <View>
             <Text style={styles.subtitle}>Email</Text>
-            <TextInput placeholder="Digite seu nome ou apelido" style={styles.input} />
+            <TextInput placeholder="Digite o email dele ou dela" style={styles.input} />
           </View>
 
           <View>
             <Text style={styles.subtitle}>Surpreenda</Text>
-            <TextInput placeholder="Digite seu nome ou apelido" style={styles.input} />
+            <TextInput placeholder="Solte o verbo para seu/sua amado(a)" style={[styles.input, styles.textarea]}
+              underlineColorAndroid="transparent"
+              numberOfLines={10}
+              multiline={true}
+            />
           </View>
 
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.startButton}>
+              <Text style={styles.buttonTxt}>Enviar Correio</Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.startButton}>
-            <Text style={styles.buttonTxt}>Começar</Text>
-          </TouchableOpacity>
         </View>
       </LinearGradient>
-
-    </View>
+    </View >
   );
 }
 
@@ -99,7 +135,7 @@ const styles = StyleSheet.create({
 
   header: {
     width: '100%',
-    height: '20%',
+    height: '25%',
 
     paddingLeft: 20,
     paddingRight: 20,
@@ -129,15 +165,15 @@ const styles = StyleSheet.create({
 
   content: {
     width: '100%',
-    height: '80%',
+    height: '75%',
     backgroundColor: '#fff',
 
-    padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
+    padding: 20,
 
     borderTopEndRadius: 30,
     borderTopStartRadius: 30,
+
+    justifyContent: 'center'
   },
 
   selectOptions: {
@@ -151,7 +187,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
 
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 10,
   },
   icons: {
     width: 65,
@@ -163,6 +200,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: '#2f394b',
     fontWeight: 'bold',
+    marginBottom: 5
   },
 
   input: {
@@ -173,11 +211,31 @@ const styles = StyleSheet.create({
 
     borderWidth: 2,
     borderRadius: 10,
-    borderColor: '#b73058'
+    borderColor: '#b73058',
+
+    marginBottom: 10,
+    fontSize: 15
+
+  },
+
+  textarea: {
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: '#b73058',
+    padding: 10,
+
+    height: 100,
+    justifyContent: "flex-start",
+    textAlignVertical: "top",
   },
 
 
   // Button
+  buttonContainer: {
+    width: '100%',
+    alignItems: 'center'
+  },
+
   startButton: {
     width: '85%',
     height: 60,
@@ -190,7 +248,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E06C88'
   },
   buttonTxt: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     textTransform: 'uppercase',
     color: '#fff'
