@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, StatusBar, Keyboard, FlatList, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { FontContext } from '../contexts/FontContext';
+import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib/typescript/src/types';
 
+import AppLoading from 'expo-app-loading';
 
 const imgs = [
-  {
-    id: 1,
-    link: '../../assets/beer.png',
-  },
   {
     id: 2,
     link: 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80',
@@ -23,13 +22,16 @@ const imgs = [
   }
 ];
 
+interface Props {
+  navigation: NativeStackNavigationHelpers;
+}
 
-function MessageRegister() {
+function MessageRegister({ navigation }: Props) {
+  const { fontsLoaded } = useContext(FontContext);
   const [selected, setSelected] = useState<boolean>();
   const [optionIndex, setOptionIndex] = useState<number>();
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const [isNameKeyboardVisible, setNameKeyboardVisible] = useState(false);
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', () => {
@@ -39,88 +41,94 @@ function MessageRegister() {
       setKeyboardVisible(false); // or some other action
     });
 
-    console.log(optionIndex);
   }, [optionIndex]);
 
-  return (
-    <View>
-      <StatusBar translucent={false} backgroundColor="#b73058" />
+  if (!fontsLoaded) {
+    return <AppLoading />
+  } else {
+    return (
+      <View>
+        <StatusBar translucent={false} backgroundColor="#b73058" />
 
-      <LinearGradient
-        colors={['#b73058', '#E06C88']}
-        style={styles.container}
-      >
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Você gostaria de se identificar?</Text>
-          <TextInput placeholder="Digite seu nome ou apelido" style={styles.headerInput} />
-        </View>
-
-        <View style={styles.content}>
-          <View>
-            {!isKeyboardVisible ? (
-              <>
-                <Text style={styles.subtitle}>Escolha uma refeição abaixo</Text>
-
-                <FlatList
-                  showsHorizontalScrollIndicator={false}
-                  data={imgs}
-                  horizontal
-                  keyExtractor={(item) => String(item.id)}
-                  renderItem={({ item, index }) => (
-                    <>
-                      {(selected && optionIndex == index)? (
-                        <TouchableOpacity
-                          style={[styles.selectOptions, { borderWidth: 2, borderColor: '#b73058' }]}
-                          onPress={() => {
-                            setSelected(false);
-                            setOptionIndex(index);
-                          }}
-                        >
-                          <Image source={require('../../assets/beer.png')} style={styles.icons} />
-                        </TouchableOpacity>
-                      ) : (
-                        <TouchableOpacity style={styles.selectOptions}
-                          onPress={() => {
-                            setSelected(true);
-                            setOptionIndex(index);
-                          }}
-                        >
-                          <Image source={require('../../assets/beer.png')} style={styles.icons} />
-                        </TouchableOpacity>
-                      )}
-
-                    </>
-                  )}
-                />
-              </>
-            ) : null}
-
+        <LinearGradient
+          colors={['#b73058', '#E06C88']}
+          style={styles.container}
+        >
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Você gostaria de se identificar?</Text>
+            <TextInput placeholder="Digite seu nome ou apelido" style={styles.headerInput} />
           </View>
 
-          <View>
-            <Text style={styles.subtitle}>Email</Text>
-            <TextInput placeholder="Digite o email dele ou dela" style={styles.input} />
-          </View>
+          <View style={styles.content}>
+            <View>
+              {!isKeyboardVisible ? (
+                <>
+                  <Text style={styles.subtitle}>Escolha uma refeição abaixo</Text>
 
-          <View>
-            <Text style={styles.subtitle}>Surpreenda</Text>
-            <TextInput placeholder="Solte o verbo para seu/sua amado(a)" style={[styles.input, styles.textarea]}
-              underlineColorAndroid="transparent"
-              numberOfLines={10}
-              multiline={true}
-            />
-          </View>
+                  <FlatList
+                    showsHorizontalScrollIndicator={false}
+                    data={imgs}
+                    horizontal
+                    keyExtractor={(item) => String(item.id)}
+                    renderItem={({ item, index }) => (
+                      <>
+                        {(selected && optionIndex == index) ? (
+                          <TouchableOpacity
+                            style={[styles.selectOptions, { borderWidth: 2, borderColor: '#b73058' }]}
+                            onPress={() => {
+                              setSelected(false);
+                              setOptionIndex(index);
+                            }}
+                          >
+                            <Image source={require('../../assets/icons/beer.png')} style={styles.icons} />
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity style={styles.selectOptions}
+                            onPress={() => {
+                              setSelected(true);
+                              setOptionIndex(index);
+                            }}
+                          >
+                            <Image source={require('../../assets/icons/beer.png')} style={styles.icons} />
+                          </TouchableOpacity>
+                        )}
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.startButton}>
-              <Text style={styles.buttonTxt}>Enviar Correio</Text>
-            </TouchableOpacity>
-          </View>
+                      </>
+                    )}
+                  />
+                </>
+              ) : null}
 
-        </View>
-      </LinearGradient>
-    </View >
-  );
+            </View>
+
+            <View>
+              <Text style={styles.subtitle}>Email</Text>
+              <TextInput placeholder="Digite o email dele ou dela" style={styles.input} />
+            </View>
+
+            <View>
+              <Text style={styles.subtitle}>Surpreenda</Text>
+              <TextInput placeholder="Solte o verbo para seu/sua amado(a)" style={[styles.input, styles.textarea]}
+                underlineColorAndroid="transparent"
+                numberOfLines={10}
+                multiline={true}
+              />
+            </View>
+
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.startButton} onPress={() => {
+                navigation.navigate('Final');
+              }} >
+                <Text style={styles.buttonTxt}>Enviar Correio</Text>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+        </LinearGradient>
+      </View >
+    );
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -147,10 +155,10 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     color: '#fff',
-    fontWeight: 'bold',
 
     textAlign: 'center',
-    marginBottom: 15
+    marginBottom: 15,
+    fontFamily: 'Poppins-Medium',
   },
 
   headerInput: {
@@ -160,7 +168,10 @@ const styles = StyleSheet.create({
 
     borderRadius: 10,
     paddingLeft: 10,
-    fontSize: 17
+    fontSize: 17,
+
+    fontFamily: 'Poppins-Light',
+
   },
 
   content: {
@@ -197,10 +208,9 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
-    fontSize: 25,
+    fontSize: 22,
     color: '#2f394b',
-    fontWeight: 'bold',
-    marginBottom: 5
+    fontFamily: 'Poppins-Medium'
   },
 
   input: {
@@ -214,8 +224,9 @@ const styles = StyleSheet.create({
     borderColor: '#b73058',
 
     marginBottom: 10,
-    fontSize: 15
+    fontSize: 15,
 
+    fontFamily: 'Poppins-Light',
   },
 
   textarea: {
@@ -248,10 +259,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#E06C88'
   },
   buttonTxt: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    color: '#fff'
+    fontSize: 28,
+    color: '#fff',
+    fontFamily: 'Courgette-Regular',
   }
 })
 

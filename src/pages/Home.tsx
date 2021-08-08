@@ -1,34 +1,50 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, StatusBar, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { FontContext } from '../contexts/FontContext';
 
-function Home() {
-  return (
-    <View style={styles.container}>
-      <StatusBar translucent={false} backgroundColor="#b73058" />
+import AppLoading from 'expo-app-loading';
+import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib/typescript/src/types';
 
-      <LinearGradient
-        colors={['#b73058', '#E06C88']}
-        style={styles.container}
-      >
-        <View style={styles.imageContent}>
-          <View style={styles.circle}>
-            <Image source={require('../../assets/Logo.png')} />
+interface Props {
+  navigation: NativeStackNavigationHelpers;
+}
+
+function Home({ navigation }: Props) {
+  const { fontsLoaded } = useContext(FontContext);
+
+  if (!fontsLoaded) {
+    return <AppLoading />
+  } else {
+    return (
+      <View style={styles.container}>
+        <StatusBar translucent={false} backgroundColor="#b73058" />
+
+        <LinearGradient
+          colors={['#b73058', '#E06C88']}
+          style={styles.container}
+        >
+          <View style={styles.imageContent}>
+            <View style={styles.circle}>
+              <Image source={require('../../assets/icons/Logo.png')} />
+            </View>
           </View>
-        </View>
 
-        <View style={styles.content}>
-          <Text style={styles.title}>Surpreenda seu amor</Text>
-          <Text style={styles.about}>Envie mensagens e presente incriveis.</Text>
+          <View style={styles.content}>
+            <Text style={styles.title}>Surpreenda seu amor</Text>
+            <Text style={styles.about}>Envie mensagens e presente incriveis.</Text>
 
-          <TouchableOpacity style={styles.startButton}>
-            <Text style={styles.buttonTxt}>Começar</Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
+            <TouchableOpacity style={styles.startButton} onPress={() => {
+              navigation.navigate('Message')
+            }} >
+              <Text style={styles.buttonTxt}>Começar</Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
 
-    </View>
-  );
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -60,7 +76,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 
-
   /* Bottom content */
   content: {
     width: '100%',
@@ -70,7 +85,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 20,
     paddingRight: 20,
-    
+
     borderTopEndRadius: 30,
     borderTopStartRadius: 30,
 
@@ -79,15 +94,17 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 45,
+    fontSize: 40,
     color: '#2f394b',
-    fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+
+    fontFamily: 'Poppins-Medium',
   },
   about: {
     color: '#9cabc2',
-    fontSize: 20,
-    textAlign: 'center'
+    fontSize: 19,
+    textAlign: 'center',
+    fontFamily: 'Poppins-Light',
   },
 
   // Button
@@ -103,10 +120,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#E06C88'
   },
   buttonTxt: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    color: '#fff'
+    fontSize: 28,
+    color: '#fff',
+
+    fontFamily: 'Courgette-Regular',
   }
 
 })
