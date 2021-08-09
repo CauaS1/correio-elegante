@@ -1,13 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, StatusBar, Image, TextInput } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, StatusBar, Image, TextInput, Keyboard } from 'react-native';
+import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib/typescript/src/types';
+import { api } from '../services/api';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontContext } from '../contexts/FontContext';
 
 import AppLoading from 'expo-app-loading';
-import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib/typescript/src/types';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
 
 interface Props {
   navigation: NativeStackNavigationHelpers;
+}
+
+interface IUser {
+  token: string;
 }
 
 function Account({ navigation }: Props) {
@@ -16,12 +24,48 @@ function Account({ navigation }: Props) {
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   async function createAccount() {
-    // await 
+    try {
+      await api.post('/register', {
+        email: email,
+        password: password
+      });
+
+      setIsLogin(true);
+      setPassword('');
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function accountLogin() {
+    try {
+      const user = await api.post('/login', {
+        email: email,
+        password: password
+      });
+
+      const userData: IUser = user.data;
+
+      await AsyncStorage.setItem('user_token', userData.token);
+
+      setPassword('');
+      setEmail('');
+      navigation.navigate('Message');
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true); // or some other action
+    })
+    Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false); // or some other action
+    });
 
   }, []);
 
@@ -37,63 +81,91 @@ function Account({ navigation }: Props) {
           style={styles.container}
         >
           <View style={styles.imageContent}>
-            <View style={styles.circle}>
-              <Image source={require('../../assets/icons/Logo.png')} />
-            </View>
+            {!isKeyboardVisible ? (
+              <View style={styles.circle}>
+                <Image source={require('../../assets/icons/Logo.png')} />
+              </View>
+            ) : null}
           </View>
 
           <View style={styles.content}>
-            {!isLogin ? ( // IS LOGIN === FALSE
+            {isLogin ? ( // IS LOGIN === FALSE
               <>
-                <Text style={styles.title}>Crie uma conta</Text>
+                {!isKeyboardVisible ? (
+                  <Text style={styles.title}>Crie uma conta</Text>
+                ) : null}
 
                 <View style={styles.form}>
                   <View>
                     <Text style={styles.subtitle}>Email</Text>
-                    <TextInput placeholder="Use seu email para criar a conta" style={styles.input} />
+                    <TextInput placeholder="Use seu email para criar a conta" style={styles.input}
+                      value={email}
+                      onChangeText={text => setEmail(text)}
+                      autoCapitalize={'none'}
+                    />
                   </View>
 
                   <View>
                     <Text style={styles.subtitle}>Senha</Text>
-                    <TextInput placeholder="Faça uma senha forte :)" style={styles.input} />
+                    <TextInput placeholder="Faça uma senha forte :)" style={styles.input}
+                      value={password}
+                      onChangeText={text => setPassword(text)}
+                      secureTextEntry={true}
+                    />
                   </View>
                 </View>
 
                 <TouchableOpacity style={styles.startButton} onPress={() => {
-                  navigation.navigate('Message')
+                  createAccount();
                 }} >
                   <Text style={styles.buttonTxt}>Registrar</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(true)} >
-                  <Text style={styles.optionBtnText}>Já tem uma? Faça login aqui.</Text>
-                </TouchableOpacity>
+                {!isKeyboardVisible ? (
+
+                  <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(true)} >
+                    <Text style={styles.optionBtnText}>Já tem uma? Faça login aqui.</Text>
+                  </TouchableOpacity>
+                ) : null}
               </>
             ) : ( // IS LOGIN === TRUE
               <>
-                <Text style={styles.title}>Acesse sua conta</Text>
+                {!isKeyboardVisible ? (
+                  <Text style={styles.title}>Acesse sua conta</Text>
+                ) : null}
 
                 <View style={styles.form}>
                   <View>
                     <Text style={styles.subtitle}>Email</Text>
-                    <TextInput placeholder="Use o email criado para acessar sua conta" style={styles.input} />
+                    <TextInput placeholder="Use o email criado para acessar sua conta" style={styles.input}
+                      value={email}
+                      onChangeText={text => setEmail(text)}
+                      autoCapitalize={'none'}
+                    />
                   </View>
 
                   <View>
                     <Text style={styles.subtitle}>Senha</Text>
-                    <TextInput placeholder="Coloque a senha da sua conta" style={styles.input} />
+                    <TextInput placeholder="Coloque a senha da sua conta" style={styles.input}
+                      value={password}
+                      onChangeText={text => setPassword(text)}
+                      secureTextEntry={true}
+                    />
                   </View>
                 </View>
 
                 <TouchableOpacity style={styles.startButton} onPress={() => {
-                  navigation.navigate('Message');
+                  accountLogin()
                 }} >
                   <Text style={styles.buttonTxt}>Entrar</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(false)}>
-                  <Text style={styles.optionBtnText}>Não tem uma? Crie uma aqui.</Text>
-                </TouchableOpacity>
+                {!isKeyboardVisible ? (
+                  <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(false)}>
+                    <Text style={styles.optionBtnText}>Não tem uma? Crie uma aqui.</Text>
+                  </TouchableOpacity>
+                ) : null}
+
               </>
             )}
           </View>
@@ -117,13 +189,13 @@ const styles = StyleSheet.create({
   /* Top Circle */
   imageContent: {
     width: '100%',
-    height: '50%',
+    height: '40%',
 
     alignItems: 'center',
     justifyContent: 'center'
   },
   circle: {
-    width: '80%',
+    width: '65%',
     height: '80%',
     backgroundColor: '#fff',
 
@@ -136,7 +208,7 @@ const styles = StyleSheet.create({
   /* Bottom content */
   content: {
     width: '100%',
-    height: '50%',
+    height: '60%',
     backgroundColor: '#fff',
 
     padding: 10,
@@ -192,7 +264,6 @@ const styles = StyleSheet.create({
     height: 60,
 
     marginTop: 25,
-    marginBottom: 10,
     borderRadius: 15,
 
     alignItems: 'center',
@@ -209,6 +280,8 @@ const styles = StyleSheet.create({
   optionBtn: {
     alignItems: 'center',
     justifyContent: 'center',
+
+    marginTop: 30
   },
   optionBtnText: {
     color: '#9cabc2',

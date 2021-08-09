@@ -1,12 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Text, View, StyleSheet, StatusBar, Image } from 'react-native';
-import { FontContext } from '../contexts/FontContext';
-import { LinearGradient } from 'expo-linear-gradient';
+import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib/typescript/src/types';
 
 import AppLoading from 'expo-app-loading';
+import { VerifyContext } from '../contexts/VerifyContext';
+import { FontContext } from '../contexts/FontContext';
 
-function Final() {
+interface Props {
+  navigation: NativeStackNavigationHelpers;
+}
+
+function Final({ navigation }: Props) {
   const { fontsLoaded } = useContext(FontContext);
+  const { verifyUserToken } = useContext(VerifyContext);
+
+  useEffect(() => {
+    verifyUserToken();
+  }, []);
 
   if (!fontsLoaded) {
     return <AppLoading />

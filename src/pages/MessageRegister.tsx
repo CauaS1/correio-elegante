@@ -5,6 +5,7 @@ import { FontContext } from '../contexts/FontContext';
 import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib/typescript/src/types';
 
 import AppLoading from 'expo-app-loading';
+import { VerifyContext } from '../contexts/VerifyContext';
 
 const imgs = [
   {
@@ -28,6 +29,8 @@ interface Props {
 
 function MessageRegister({ navigation }: Props) {
   const { fontsLoaded } = useContext(FontContext);
+  const { verifyUserToken } = useContext(VerifyContext);
+
   const [selected, setSelected] = useState<boolean>();
   const [optionIndex, setOptionIndex] = useState<number>();
 
@@ -40,8 +43,11 @@ function MessageRegister({ navigation }: Props) {
     Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardVisible(false); // or some other action
     });
-
   }, [optionIndex]);
+
+  useEffect(() => {
+    verifyUserToken();
+  }, []);
 
   if (!fontsLoaded) {
     return <AppLoading />
