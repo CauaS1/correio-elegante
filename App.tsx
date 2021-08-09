@@ -7,6 +7,7 @@ import Home from './src/pages/Home';
 import MessageRegister from './src/pages/MessageRegister';
 import Final from './src/pages/FInal';
 import { FontProvider } from './src/contexts/FontContext';
+import Account from './src/pages/Account';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,10 +15,13 @@ function App() {
   return (
     <NavigationContainer>
       <FontProvider>
-        <Stack.Navigator initialRouteName="Final" >
+        <Stack.Navigator initialRouteName="Home" >
           <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
           <Stack.Screen name="Message" component={MessageRegister} options={{ headerShown: false }} />
           <Stack.Screen name="Final" component={Final} options={{ headerShown: false }} />
+
+          <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
+
         </Stack.Navigator>
       </FontProvider>
     </NavigationContainer>

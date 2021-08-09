@@ -35,7 +35,7 @@ function Home({ navigation }: Props) {
             <Text style={styles.about}>Envie mensagens e presente incriveis.</Text>
 
             <TouchableOpacity style={styles.startButton} onPress={() => {
-              navigation.navigate('Message')
+              navigation.navigate('Account')
             }} >
               <Text style={styles.buttonTxt}>Começar</Text>
             </TouchableOpacity>
