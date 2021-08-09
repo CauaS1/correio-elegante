@@ -6,6 +6,8 @@ import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib
 
 import AppLoading from 'expo-app-loading';
 import { VerifyContext } from '../contexts/VerifyContext';
+import { api } from '../services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const imgs = [
   {
@@ -36,6 +38,12 @@ function MessageRegister({ navigation }: Props) {
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
+  const [senderName, setSenderName] = useState('');
+  const [message, setMessage] = useState('');
+  const [meal, setMeal] = useState('beer');
+  const [receiver, setReceiver] = useState('');
+
+
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true); // or some other action
@@ -48,6 +56,29 @@ function MessageRegister({ navigation }: Props) {
   useEffect(() => {
     verifyUserToken();
   }, []);
+
+  async function sendMail() {
+    const senderId = await AsyncStorage.getItem('user_id');
+
+    try {
+      await api.post('/mail', {
+        senderId: senderId,
+        sender: senderName,
+        message: message,
+        meal: meal,
+        receiver: receiver
+      });
+
+      console.log('Mail Sent!');
+      navigation.navigate('Final', {
+        sender: senderName,
+        receiver: receiver,
+        meal: meal
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   if (!fontsLoaded) {
     return <AppLoading />
@@ -62,7 +93,10 @@ function MessageRegister({ navigation }: Props) {
         >
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Você gostaria de se identificar?</Text>
-            <TextInput placeholder="Digite seu nome ou apelido" style={styles.headerInput} />
+            <TextInput placeholder="Digite seu nome ou apelido" style={styles.headerInput}
+              value={senderName}
+              onChangeText={text => setSenderName(text)}
+            />
           </View>
 
           <View style={styles.content}>
@@ -84,6 +118,7 @@ function MessageRegister({ navigation }: Props) {
                             onPress={() => {
                               setSelected(false);
                               setOptionIndex(index);
+                              setMeal('');
                             }}
                           >
                             <Image source={require('../../assets/icons/beer.png')} style={styles.icons} />
@@ -93,6 +128,7 @@ function MessageRegister({ navigation }: Props) {
                             onPress={() => {
                               setSelected(true);
                               setOptionIndex(index);
+                              setMeal('beer');
                             }}
                           >
                             <Image source={require('../../assets/icons/beer.png')} style={styles.icons} />
@@ -109,7 +145,10 @@ function MessageRegister({ navigation }: Props) {
 
             <View>
               <Text style={styles.subtitle}>Email</Text>
-              <TextInput placeholder="Digite o email dele ou dela" style={styles.input} />
+              <TextInput placeholder="Digite o email dele ou dela" style={styles.input}
+                value={receiver}
+                onChangeText={text => setReceiver(text)}
+              />
             </View>
 
             <View>
@@ -118,14 +157,14 @@ function MessageRegister({ navigation }: Props) {
                 underlineColorAndroid="transparent"
                 numberOfLines={10}
                 multiline={true}
+                value={message}
+                onChangeText={text => setMessage(text)}
               />
             </View>
 
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.startButton} onPress={() => {
-                navigation.navigate('Final');
-              }} >
-                <Text style={styles.buttonTxt}>Enviar Correio</Text>
+              <TouchableOpacity style={styles.startButton} onPress={() => { sendMail() }} >
+                <Text style={styles.buttonTxt} >Enviar Correio</Text>
               </TouchableOpacity>
             </View>
 
