@@ -39,7 +39,7 @@ const images = [
     id: 6,
     image: require('../../assets/icons/beer.png'),
     name: 'beer'
-  } 
+  }
 ];
 
 interface Props {
@@ -86,12 +86,17 @@ function MessageRegister({ navigation }: Props) {
         receiver: receiver
       });
 
-      console.log('Mail Sent!');
+      setReceiver('');
+      setMeal('');
+      setMessage('');
+      setSenderName('');
+
       navigation.navigate('Final', {
         sender: senderName,
         receiver: receiver,
         meal: meal
       });
+
     } catch (err) {
       console.log(err);
     }
@@ -103,6 +108,8 @@ function MessageRegister({ navigation }: Props) {
     return (
       <View>
         <StatusBar translucent={false} backgroundColor="#b73058" barStyle="light-content" />
+
+
 
         <LinearGradient
           colors={['#b73058', '#E06C88']}
@@ -165,6 +172,8 @@ function MessageRegister({ navigation }: Props) {
               <TextInput placeholder="Digite o email dele ou dela" style={styles.input}
                 value={receiver}
                 onChangeText={text => setReceiver(text)}
+                autoCapitalize={'none'}
+                keyboardType={'email-address'}
               />
             </View>
 
@@ -184,6 +193,11 @@ function MessageRegister({ navigation }: Props) {
                 <Text style={styles.buttonTxt} >Enviar Correio</Text>
               </TouchableOpacity>
             </View>
+
+
+            <TouchableOpacity onPress={() => navigation.navigate('MailsSent')} style={{ marginTop: 20 }} >
+              <Text style={{ fontFamily: 'Poppins-Light', color: '#8D8D8D80', textAlign: 'center' }} >Veja todas suas cartas enviadas.</Text>
+            </TouchableOpacity>
 
           </View>
         </LinearGradient>
@@ -233,7 +247,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
 
     fontFamily: 'Poppins-Light',
-
   },
 
   content: {

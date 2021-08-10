@@ -9,6 +9,7 @@ import Final from './src/pages/Final';
 import { FontProvider } from './src/contexts/FontContext';
 import Account from './src/pages/Account';
 import { VerifyProvider } from './src/contexts/VerifyContext';
+import MailsSent from './src/pages/MailsSent';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +23,7 @@ function App() {
             <Stack.Screen name="Message" component={MessageRegister} options={{ headerShown: false }} />
             <Stack.Screen name="Final" component={Final} options={{ headerShown: false }} />
             <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
-
+            <Stack.Screen name="MailsSent" component={MailsSent} options={{ headerShown: false }} />
           </Stack.Navigator>
         </FontProvider>
       </VerifyProvider>
