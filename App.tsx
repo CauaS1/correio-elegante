@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Home from './src/pages/Home';
 import MessageRegister from './src/pages/MessageRegister';
-import Final from './src/pages/FInal';
+import Final from './src/pages/Final';
 import { FontProvider } from './src/contexts/FontContext';
 import Account from './src/pages/Account';
 import { VerifyProvider } from './src/contexts/VerifyContext';

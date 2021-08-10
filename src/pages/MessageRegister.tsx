@@ -9,20 +9,37 @@ import { VerifyContext } from '../contexts/VerifyContext';
 import { api } from '../services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const imgs = [
+const images = [
+  {
+    id: 1,
+    image: require('../../assets/icons/champagne.png'),
+    name: 'champagne'
+  },
   {
     id: 2,
-    link: 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80',
+    image: require('../../assets/icons/lollipop.png'),
+    name: 'lollipop'
   },
   {
     id: 3,
-
-    link: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGl6emF8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    image: require('../../assets/icons/cheese.png'),
+    name: 'cheese'
   },
   {
     id: 4,
-    link: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGl6emF8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-  }
+    image: require('../../assets/icons/fast-food.png'),
+    name: 'fast food'
+  },
+  {
+    id: 5,
+    image: require('../../assets/icons/french-fries.png'),
+    name: 'french-fries'
+  },
+  {
+    id: 6,
+    image: require('../../assets/icons/beer.png'),
+    name: 'beer'
+  } 
 ];
 
 interface Props {
@@ -85,7 +102,7 @@ function MessageRegister({ navigation }: Props) {
   } else {
     return (
       <View>
-        <StatusBar translucent={false} backgroundColor="#b73058" />
+        <StatusBar translucent={false} backgroundColor="#b73058" barStyle="light-content" />
 
         <LinearGradient
           colors={['#b73058', '#E06C88']}
@@ -107,7 +124,7 @@ function MessageRegister({ navigation }: Props) {
 
                   <FlatList
                     showsHorizontalScrollIndicator={false}
-                    data={imgs}
+                    data={images}
                     horizontal
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item, index }) => (
@@ -121,17 +138,17 @@ function MessageRegister({ navigation }: Props) {
                               setMeal('');
                             }}
                           >
-                            <Image source={require('../../assets/icons/beer.png')} style={styles.icons} />
+                            <Image source={item.image} style={styles.icons} />
                           </TouchableOpacity>
                         ) : (
                           <TouchableOpacity style={styles.selectOptions}
                             onPress={() => {
                               setSelected(true);
                               setOptionIndex(index);
-                              setMeal('beer');
+                              setMeal(item.name);
                             }}
                           >
-                            <Image source={require('../../assets/icons/beer.png')} style={styles.icons} />
+                            <Image source={item.image} style={styles.icons} />
                           </TouchableOpacity>
                         )}
 

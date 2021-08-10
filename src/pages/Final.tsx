@@ -5,18 +5,73 @@ import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib
 import AppLoading from 'expo-app-loading';
 import { VerifyContext } from '../contexts/VerifyContext';
 import { FontContext } from '../contexts/FontContext';
+import { RouteProp } from '@react-navigation/native';
+
+const images = [
+  {
+    id: 1,
+    image: require('../../assets/icons/champagne.png'),
+    name: 'champagne'
+  },
+  {
+    id: 2,
+    image: require('../../assets/icons/lollipop.png'),
+    name: 'lollipop'
+  },
+  {
+    id: 3,
+    image: require('../../assets/icons/cheese.png'),
+    name: 'cheese'
+  },
+  {
+    id: 4,
+    image: require('../../assets/icons/fast-food.png'),
+    name: 'fast food'
+  },
+  {
+    id: 5,
+    image: require('../../assets/icons/french-fries.png'),
+    name: 'french-fries'
+  },
+  {
+    id: 6,
+    image: require('../../assets/icons/beer.png'),
+    name: 'beer'
+  } 
+];
+
+type ParamsList = {
+  Final: {
+    sender: string;
+    receiver: string;
+    meal: string;
+  }
+}
+
+type ScreenRouteProp = RouteProp<ParamsList, 'Final'>
 
 interface Props {
   navigation: NativeStackNavigationHelpers;
+  route: ScreenRouteProp;
 }
 
-function Final({ navigation }: Props) {
+function Final({ navigation, route }: Props) {
   const { fontsLoaded } = useContext(FontContext);
   const { verifyUserToken } = useContext(VerifyContext);
 
   useEffect(() => {
     verifyUserToken();
   }, []);
+
+  function selectImage() {
+    for(let img of images) {
+      if (img.name === route.params.meal) {
+        return (
+          <Image source={img.image} style={styles.cardIcons} />
+        );
+      }
+    }
+  }
 
   if (!fontsLoaded) {
     return <AppLoading />
@@ -37,23 +92,23 @@ function Final({ navigation }: Props) {
 
             <View style={styles.cardSides}>
               <View style={styles.cardIconsContainer}>
-                <Image source={require('../../assets/icons/fast-food.png')} style={styles.cardIcons} />
+                { selectImage() }
               </View>
             </View>
 
             <View style={styles.cardMiddle}>
               <View style={styles.cardTextContainer}>
-                <Text style={styles.cardText}>De: Admirador Secreto</Text>
+                <Text style={styles.cardText}>De: { route.params.sender }</Text>
               </View>
 
               <View style={styles.cardTextContainer}>
-                <Text style={styles.cardText}>Para: Você</Text>
+                <Text style={styles.cardText}>Para: { route.params.receiver }</Text>
               </View>
             </View>
 
             <View style={styles.cardSides}>
               <View style={styles.cardIconsContainer}>
-                <Image source={require('../../assets/icons/fast-food.png')} style={styles.cardIcons} />
+              { selectImage() }
               </View>
             </View>
           </View>
@@ -148,7 +203,8 @@ const styles = StyleSheet.create({
   },
   cardIcons: {
     width: 70,
-    height: 70
+    height: 70,
+    resizeMode: 'contain'
   }
 })
 

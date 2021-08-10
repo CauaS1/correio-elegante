@@ -18,7 +18,7 @@ function Home({ navigation }: Props) {
   } else {
     return (
       <View style={styles.container}>
-        <StatusBar translucent={false} backgroundColor="#b73058" />
+        <StatusBar translucent={false} backgroundColor="#b73058" barStyle="light-content" />
 
         <LinearGradient
           colors={['#b73058', '#E06C88']}
