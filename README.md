@@ -1,4 +1,6 @@
-<img src="" />
+<p align="center" >
+  <img src="https://github.com/CauaS1/correio-elegante/blob/main/assets/icons/logo.png" />
+</p>
 
 
 <h2 align="center">Surpreenda seu amor com mensagens e presentes incríveis!</h2>
