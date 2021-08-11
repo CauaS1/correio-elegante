@@ -10,6 +10,7 @@ import { FontProvider } from './src/contexts/FontContext';
 import Account from './src/pages/Account';
 import { VerifyProvider } from './src/contexts/VerifyContext';
 import MailsSent from './src/pages/MailsSent';
+import Notifications from './src/pages/Notifications';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,8 @@ function App() {
             <Stack.Screen name="Final" component={Final} options={{ headerShown: false }} />
             <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
             <Stack.Screen name="MailsSent" component={MailsSent} options={{ headerShown: false }} />
+            <Stack.Screen name="Notification" component={Notifications} options={{ headerShown: false }} />
+
           </Stack.Navigator>
         </FontProvider>
       </VerifyProvider>

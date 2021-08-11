@@ -16,6 +16,9 @@ interface Props {
 
 interface IUser {
   token: string;
+  user: {
+    email: string;
+  }
 }
 
 function Account({ navigation }: Props) {
@@ -50,6 +53,7 @@ function Account({ navigation }: Props) {
       const userData: IUser = user.data;
 
       await AsyncStorage.setItem('user_token', userData.token);
+      await AsyncStorage.setItem('user_email', userData.user.email);
 
       setPassword('');
       setEmail('');
@@ -123,7 +127,7 @@ function Account({ navigation }: Props) {
 
                 {!isKeyboardVisible ? (
 
-                  <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(true)} >
+                  <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(false)} >
                     <Text style={styles.optionBtnText}>Já tem uma? Faça login aqui.</Text>
                   </TouchableOpacity>
                 ) : null}
@@ -161,7 +165,7 @@ function Account({ navigation }: Props) {
                 </TouchableOpacity>
 
                 {!isKeyboardVisible ? (
-                  <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(false)}>
+                  <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(true)}>
                     <Text style={styles.optionBtnText}>Não tem uma? Crie uma aqui.</Text>
                   </TouchableOpacity>
                 ) : null}

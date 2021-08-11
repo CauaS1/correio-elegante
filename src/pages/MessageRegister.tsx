@@ -60,7 +60,6 @@ function MessageRegister({ navigation }: Props) {
   const [meal, setMeal] = useState('beer');
   const [receiver, setReceiver] = useState('');
 
-
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true); // or some other action
@@ -90,6 +89,7 @@ function MessageRegister({ navigation }: Props) {
       setMeal('');
       setMessage('');
       setSenderName('');
+      setSelected(false);
 
       navigation.navigate('Final', {
         sender: senderName,
@@ -109,18 +109,28 @@ function MessageRegister({ navigation }: Props) {
       <View>
         <StatusBar translucent={false} backgroundColor="#b73058" barStyle="light-content" />
 
-
-
         <LinearGradient
           colors={['#b73058', '#E06C88']}
           style={styles.container}
         >
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Você gostaria de se identificar?</Text>
-            <TextInput placeholder="Digite seu nome ou apelido" style={styles.headerInput}
-              value={senderName}
-              onChangeText={text => setSenderName(text)}
-            />
+            {!isKeyboardVisible ? (
+              <View style={{ width: '100%', height: 25, alignItems: 'flex-end', justifyContent: 'center' }}>
+                <TouchableOpacity style={{ width: 25, height: 25, alignItems: 'center', justifyContent: 'center' }}
+                  onPress={() => navigation.navigate('Notification')}
+                >
+                  <Image source={require('../../assets/icons/bell.png')} style={{ width: 25, height: 25 }} />
+                </TouchableOpacity>
+              </View>
+            ) : null}
+
+            <View style={{ width: '100%' }}>
+              <Text style={styles.headerTitle}>Você gostaria de se identificar?</Text>
+              <TextInput placeholder="Digite seu nome ou apelido" style={styles.headerInput}
+                value={senderName}
+                onChangeText={text => setSenderName(text)}
+              />
+            </View>
           </View>
 
           <View style={styles.content}>
@@ -195,9 +205,11 @@ function MessageRegister({ navigation }: Props) {
             </View>
 
 
-            <TouchableOpacity onPress={() => navigation.navigate('MailsSent')} style={{ marginTop: 20 }} >
-              <Text style={{ fontFamily: 'Poppins-Light', color: '#8D8D8D80', textAlign: 'center' }} >Veja todas suas cartas enviadas.</Text>
-            </TouchableOpacity>
+            {!isKeyboardVisible ? (
+              <TouchableOpacity onPress={() => navigation.navigate('MailsSent')} style={{ marginTop: 20 }} >
+                <Text style={{ fontFamily: 'Poppins-Light', color: '#8D8D8D80', textAlign: 'center' }} >Veja todas suas cartas enviadas.</Text>
+              </TouchableOpacity>
+            ) : null}
 
           </View>
         </LinearGradient>
@@ -225,7 +237,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
 
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-around'
   },
 
   headerTitle: {

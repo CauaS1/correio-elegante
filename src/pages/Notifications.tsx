@@ -14,14 +14,15 @@ interface IMail {
   id: string;
 }
 
-function MailsSent() {
+function Notifications() {
   const [mails, setMails] = useState<IMail[]>([])
 
   async function getMyMails() {
-    const userId = await AsyncStorage.getItem('user_id');
+    const userEmail = await AsyncStorage.getItem('user_email');
     try {
-      const mail = await (await api.get('/mails/' + userId)).data;
+      const mail = await (await api.get('/mails/received/' + userEmail)).data;
       setMails(mail);
+
     } catch (err) {
       console.log(err);
     }
@@ -59,7 +60,7 @@ function MailsSent() {
         style={styles.container}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Todas suas cartas enviadas</Text>
+          <Text style={styles.title}>Cartas que você recebeu :)</Text>
         </View>
 
         <View style={styles.content}>
@@ -72,8 +73,8 @@ function MailsSent() {
                 </View>
 
                 <View style={styles.info}>
-                  <Text style={styles.receiverTitle}>Para: {item.receiver}</Text>
-                  <Text style={styles.senderTitle}>De: {item.sender}</Text>
+                  <Text style={styles.receiverTitle}>De: {item.sender}</Text>
+                  <Text style={styles.senderTitle}>De: Você</Text>
                   <Text style={styles.messageStyle}
                     numberOfLines={2}
                   >{item.message}</Text>
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 30,
     paddingBottom: 30,
-
+    
     borderTopEndRadius: 30,
     borderTopStartRadius: 30,
   },
@@ -185,4 +186,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default MailsSent;
+export default Notifications;
