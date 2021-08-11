@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, StatusBar, Image } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, StatusBar, Image, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontContext } from '../contexts/FontContext';
 
 import AppLoading from 'expo-app-loading';
 import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib/typescript/src/types';
+import { useEffect } from 'react';
 
 interface Props {
   navigation: NativeStackNavigationHelpers;
@@ -12,6 +13,8 @@ interface Props {
 
 function Home({ navigation }: Props) {
   const { fontsLoaded } = useContext(FontContext);
+
+  const screenHeight = Dimensions.get('window').height;
 
   if (!fontsLoaded) {
     return <AppLoading />
@@ -25,14 +28,29 @@ function Home({ navigation }: Props) {
           style={styles.container}
         >
           <View style={styles.imageContent}>
-            <View style={styles.circle}>
-              <Image source={require('../../assets/icons/Logo.png')} />
-            </View>
+            {screenHeight > 640 ? (
+              <View style={styles.circle}>
+                <Image source={require('../../assets/icons/Logo.png')} />
+              </View>
+            ) : (
+              <View style={smallStyles.circle}>
+                <Image source={require('../../assets/icons/Logo.png')} />
+              </View>
+            )}
           </View>
 
           <View style={styles.content}>
-            <Text style={styles.title}>Surpreenda seu amor</Text>
-            <Text style={styles.about}>Envie mensagens e presente incriveis.</Text>
+            {screenHeight > 640 ? (
+              <>
+                <Text style={styles.title}>Surpreenda seu amor</Text>
+                <Text style={styles.about}>Envie mensagens e presente incriveis.</Text>
+              </>
+            ) : (
+              <>
+                <Text style={smallStyles.title}>Surpreenda seu amor</Text>
+                <Text style={smallStyles.about}>Envie mensagens e presente incriveis.</Text>
+              </>
+            )}
 
             <TouchableOpacity style={styles.startButton} onPress={() => {
               navigation.navigate('Account')
@@ -126,7 +144,56 @@ const styles = StyleSheet.create({
     fontFamily: 'Courgette-Regular',
   }
 
-})
+});
+
+const smallStyles = StyleSheet.create({
+  /* Top Circle */
+  circle: {
+    width: '70%',
+    height: '80%',
+    backgroundColor: '#fff',
+
+    borderRadius: 200,
+
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  /* Bottom content */
+  title: {
+    fontSize: 33,
+    color: '#2f394b',
+    textAlign: 'center',
+
+    fontFamily: 'Poppins-Medium',
+  },
+  about: {
+    color: '#9cabc2',
+    fontSize: 16,
+    textAlign: 'center',
+    fontFamily: 'Poppins-Light',
+  },
+
+  // Button
+  startButton: {
+    width: '85%',
+    height: 50,
+
+    marginTop: 30,
+    borderRadius: 15,
+
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E06C88'
+  },
+  buttonTxt: {
+    fontSize: 20,
+    color: '#fff',
+
+    fontFamily: 'Courgette-Regular',
+  }
+
+});
 
 export default Home;
 

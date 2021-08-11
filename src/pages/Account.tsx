@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, StatusBar, Image, TextInput, Keyboard } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, StatusBar, Image, TextInput, Keyboard, Dimensions } from 'react-native';
 import { NativeStackNavigationHelpers } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { api } from '../services/api';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -28,6 +28,8 @@ function Account({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  const screenHeight = Dimensions.get('window').height;
 
   async function createAccount() {
     try {
@@ -86,9 +88,17 @@ function Account({ navigation }: Props) {
         >
           <View style={styles.imageContent}>
             {!isKeyboardVisible ? (
-              <View style={styles.circle}>
-                <Image source={require('../../assets/icons/Logo.png')} />
-              </View>
+              <>
+                {screenHeight > 640 ? (
+                  <View style={styles.circle}>
+                    <Image source={require('../../assets/icons/Logo.png')} />
+                  </View>
+                ) : (
+                  <View style={smallStyles.circle}>
+                    <Image source={require('../../assets/icons/Logo.png')} />
+                  </View>
+                )}
+              </>
             ) : null}
           </View>
 
@@ -96,78 +106,185 @@ function Account({ navigation }: Props) {
             {isLogin ? ( // IS LOGIN === FALSE
               <>
                 {!isKeyboardVisible ? (
-                  <Text style={styles.title}>Crie uma conta</Text>
+                  <>
+                    {screenHeight > 640 ? (
+                      <Text style={styles.title}>Crie uma conta</Text>
+                    ) : (
+                      <Text style={smallStyles.title}>Crie uma conta</Text>
+                    )}
+                  </>
                 ) : null}
 
                 <View style={styles.form}>
                   <View>
-                    <Text style={styles.subtitle}>Email</Text>
-                    <TextInput placeholder="Use seu email para criar a conta" style={styles.input}
-                      value={email}
-                      onChangeText={text => setEmail(text)}
-                      autoCapitalize={'none'}
-                    />
+                    {screenHeight > 640 ? (
+                      <>
+
+                        <Text style={styles.subtitle}>Email</Text>
+                        <TextInput placeholder="Use um email para criar a sua conta" style={styles.input}
+                          value={email}
+                          onChangeText={text => setEmail(text)}
+                          autoCapitalize={'none'}
+                        />
+                      </>
+
+                    ) : (
+                      <>
+
+                        <Text style={smallStyles.subtitle}>Email</Text>
+                        <TextInput placeholder="Use um email para criar a sua conta" style={smallStyles.input}
+                          value={email}
+                          onChangeText={text => setEmail(text)}
+                          autoCapitalize={'none'}
+                        />
+                      </>
+                    )}
+
                   </View>
 
                   <View>
-                    <Text style={styles.subtitle}>Senha</Text>
-                    <TextInput placeholder="Faça uma senha forte :)" style={styles.input}
-                      value={password}
-                      onChangeText={text => setPassword(text)}
-                      secureTextEntry={true}
-                    />
+                    {screenHeight > 640 ? (
+                      <>
+                        <Text style={styles.subtitle}>Senha</Text>
+                        <TextInput placeholder="Faça uma senha forte" style={styles.input}
+                          value={password}
+                          onChangeText={text => setPassword(text)}
+                          secureTextEntry={true}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Text style={smallStyles.subtitle}>Senha</Text>
+                        <TextInput placeholder="Faça uma senha forte" style={smallStyles.input}
+                          value={password}
+                          onChangeText={text => setPassword(text)}
+                          secureTextEntry={true}
+                        />
+                      </>
+
+                    )}
                   </View>
                 </View>
 
-                <TouchableOpacity style={styles.startButton} onPress={() => {
-                  createAccount();
-                }} >
-                  <Text style={styles.buttonTxt}>Registrar</Text>
-                </TouchableOpacity>
+                {screenHeight > 640 ? (
+                  <TouchableOpacity style={styles.startButton} onPress={() => {
+                    createAccount();
+                  }} >
+                    <Text style={styles.buttonTxt}>Registrar</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={smallStyles.startButton} onPress={() => {
+                    createAccount();
+                  }} >
+                    <Text style={styles.buttonTxt}>Registrar</Text>
+                  </TouchableOpacity>
+                )}
 
                 {!isKeyboardVisible ? (
+                  <>
+                    {screenHeight > 640 ? (
+                      <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(false)} >
+                        <Text style={styles.optionBtnText}>Já tem uma? Faça login aqui.</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity style={smallStyles.optionBtn} onPress={() => setIsLogin(false)} >
+                        <Text style={styles.optionBtnText}>Já tem uma? Faça login aqui.</Text>
+                      </TouchableOpacity>
+                    )}
 
-                  <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(false)} >
-                    <Text style={styles.optionBtnText}>Já tem uma? Faça login aqui.</Text>
-                  </TouchableOpacity>
+                  </>
                 ) : null}
               </>
             ) : ( // IS LOGIN === TRUE
               <>
                 {!isKeyboardVisible ? (
-                  <Text style={styles.title}>Acesse sua conta</Text>
+                  <>
+                    {screenHeight > 640 ? (
+                      <Text style={styles.title}>Acesse sua conta</Text>
+                    ) : (
+                      <Text style={smallStyles.title}>Acesse sua conta</Text>
+                    )}
+                  </>
                 ) : null}
 
                 <View style={styles.form}>
                   <View>
-                    <Text style={styles.subtitle}>Email</Text>
-                    <TextInput placeholder="Use o email criado para acessar sua conta" style={styles.input}
-                      value={email}
-                      onChangeText={text => setEmail(text)}
-                      autoCapitalize={'none'}
-                    />
+                    {screenHeight > 640 ? (
+                      <>
+
+                        <Text style={styles.subtitle}>Email</Text>
+                        <TextInput placeholder="Use o email criado para acessar sua conta" style={styles.input}
+                          value={email}
+                          onChangeText={text => setEmail(text)}
+                          autoCapitalize={'none'}
+                        />
+                      </>
+
+                    ) : (
+                      <>
+
+                        <Text style={smallStyles.subtitle}>Email</Text>
+                        <TextInput placeholder="Use o email criado para acessar sua conta" style={smallStyles.input}
+                          value={email}
+                          onChangeText={text => setEmail(text)}
+                          autoCapitalize={'none'}
+                        />
+                      </>
+                    )}
+
                   </View>
 
                   <View>
-                    <Text style={styles.subtitle}>Senha</Text>
-                    <TextInput placeholder="Coloque a senha da sua conta" style={styles.input}
-                      value={password}
-                      onChangeText={text => setPassword(text)}
-                      secureTextEntry={true}
-                    />
+                    {screenHeight > 640 ? (
+                      <>
+                        <Text style={styles.subtitle}>Senha</Text>
+                        <TextInput placeholder="Coloque a senha da sua conta" style={styles.input}
+                          value={password}
+                          onChangeText={text => setPassword(text)}
+                          secureTextEntry={true}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Text style={smallStyles.subtitle}>Senha</Text>
+                        <TextInput placeholder="Coloque a senha da sua conta" style={smallStyles.input}
+                          value={password}
+                          onChangeText={text => setPassword(text)}
+                          secureTextEntry={true}
+                        />
+                      </>
+
+                    )}
                   </View>
                 </View>
 
-                <TouchableOpacity style={styles.startButton} onPress={() => {
-                  accountLogin()
-                }} >
-                  <Text style={styles.buttonTxt}>Entrar</Text>
-                </TouchableOpacity>
+                {screenHeight > 640 ? (
+                  <TouchableOpacity style={styles.startButton} onPress={() => {
+                    accountLogin()
+                  }} >
+                    <Text style={styles.buttonTxt}>Entrar</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={smallStyles.startButton} onPress={() => {
+                    accountLogin()
+                  }} >
+                    <Text style={styles.buttonTxt}>Entrar</Text>
+                  </TouchableOpacity>
+                )}
 
                 {!isKeyboardVisible ? (
-                  <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(true)}>
-                    <Text style={styles.optionBtnText}>Não tem uma? Crie uma aqui.</Text>
-                  </TouchableOpacity>
+                  <>
+                    {screenHeight > 640 ? (
+                      <TouchableOpacity style={styles.optionBtn} onPress={() => setIsLogin(true)}>
+                        <Text style={styles.optionBtnText}>Não tem uma? Crie uma aqui.</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity style={smallStyles.optionBtn} onPress={() => setIsLogin(true)}>
+                        <Text style={styles.optionBtnText}>Não tem uma? Crie uma aqui.</Text>
+                      </TouchableOpacity>
+                    )}
+
+                  </>
                 ) : null}
 
               </>
@@ -175,7 +292,7 @@ function Account({ navigation }: Props) {
           </View>
         </LinearGradient>
 
-      </View>
+      </View >
     );
   }
 }
@@ -249,7 +366,7 @@ const styles = StyleSheet.create({
 
   input: {
     width: '100%',
-    height: 50,
+    height: 55,
     paddingLeft: 10,
     backgroundColor: '#fff',
 
@@ -286,6 +403,87 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
 
     marginTop: 30
+  },
+  optionBtnText: {
+    color: '#9cabc2',
+    fontSize: 15,
+    textAlign: 'center',
+    fontFamily: 'Poppins-Light',
+  },
+
+})
+
+const smallStyles = StyleSheet.create({
+  /* Top Circle */
+  circle: {
+    width: '65%',
+    height: '70%',
+    backgroundColor: '#fff',
+
+    borderRadius: 200,
+
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  /* Bottom content */
+  title: {
+    fontSize: 30,
+    color: '#2f394b',
+    textAlign: 'center',
+
+    fontFamily: 'Poppins-Medium',
+  },
+
+  /*  F O R M */
+  form: {
+    width: '100%',
+  },
+
+  subtitle: {
+    fontSize: 18,
+    color: '#2f394b',
+    fontFamily: 'Poppins-Medium'
+  },
+
+  input: {
+    width: '100%',
+    height: 50,
+    paddingLeft: 10,
+    backgroundColor: '#fff',
+
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: '#b73058',
+
+    marginBottom: 10,
+    fontSize: 13,
+
+    fontFamily: 'Poppins-Light',
+  },
+  // Button
+  startButton: {
+    width: '85%',
+    height: 50,
+
+    borderRadius: 15,
+
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E06C88'
+  },
+  buttonTxt: {
+    fontSize: 20,
+    color: '#fff',
+
+    fontFamily: 'Courgette-Regular',
+  },
+
+  optionBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    marginTop: 18
   },
   optionBtnText: {
     color: '#9cabc2',
